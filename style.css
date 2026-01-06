@@ -1,0 +1,712 @@
+/**
+ * GPX Generator - iOS Glassmorphism Theme
+ * Modern, eye-catching design optimized for iPhone
+ */
+
+:root {
+  /* iOS-inspired color palette */
+  --bg-gradient-start: #1a1a2e;
+  --bg-gradient-mid: #16213e;
+  --bg-gradient-end: #0f3460;
+
+  /* Glass colors */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+
+  /* Accent colors - iOS style */
+  --accent-blue: #0a84ff;
+  --accent-green: #30d158;
+  --accent-orange: #ff9f0a;
+  --accent-red: #ff453a;
+  --accent-purple: #bf5af2;
+  --accent-teal: #64d2ff;
+
+  /* Gradients */
+  --gradient-blue: linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%);
+  --gradient-green: linear-gradient(135deg, #30d158 0%, #34c759 100%);
+  --gradient-orange: linear-gradient(135deg, #ff9f0a 0%, #ff375f 100%);
+
+  /* iOS blur amount */
+  --blur-amount: 20px;
+  --blur-amount-light: 10px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-start) 0%,
+    var(--bg-gradient-mid) 50%,
+    var(--bg-gradient-end) 100%
+  );
+  background-attachment: fixed;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Animated background orbs */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  z-index: -1;
+  animation: float 20s ease-in-out infinite;
+}
+
+body::before {
+  width: 400px;
+  height: 400px;
+  background: var(--accent-blue);
+  top: -100px;
+  right: -100px;
+}
+
+body::after {
+  width: 300px;
+  height: 300px;
+  background: var(--accent-purple);
+  bottom: 20%;
+  left: -50px;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, 20px) scale(1.05);
+  }
+  50% {
+    transform: translate(-10px, 30px) scale(0.95);
+  }
+  75% {
+    transform: translate(-20px, -10px) scale(1.02);
+  }
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ===================================
+   Header - Glass Effect
+   =================================== */
+.app-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  padding: 20px 20px;
+  padding-top: calc(20px + env(safe-area-inset-top, 0));
+  text-align: center;
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.app-header .subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ===================================
+   Main Content
+   =================================== */
+.app-content {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: 120px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===================================
+   Map Section - Glass Card
+   =================================== */
+.map-section {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount-light));
+  -webkit-backdrop-filter: blur(var(--blur-amount-light));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#map {
+  height: 300px;
+  width: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* Map control buttons - top right */
+.map-controls-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.map-btn-small {
+  width: 44px;
+  height: 44px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.map-btn-small:active {
+  transform: scale(0.92);
+  background: var(--glass-bg-hover);
+}
+
+.map-btn-small.btn-save {
+  background: linear-gradient(
+    135deg,
+    rgba(48, 209, 88, 0.3) 0%,
+    rgba(48, 209, 88, 0.1) 100%
+  );
+  border-color: rgba(48, 209, 88, 0.4);
+}
+
+.map-btn-small.btn-load {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 132, 255, 0.3) 0%,
+    rgba(10, 132, 255, 0.1) 100%
+  );
+  border-color: rgba(10, 132, 255, 0.4);
+}
+
+/* Map control buttons - bottom */
+.map-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.map-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  color: #000000;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-btn:active {
+  transform: scale(0.96);
+  background: var(--glass-bg-hover);
+}
+
+/* Custom marker styles */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* ===================================
+   Glass Cards
+   =================================== */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===================================
+   Stats Card - Premium Look
+   =================================== */
+.stats-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stats-grid.four-cols {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stats-grid.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stats-grid.two-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stat-item {
+  text-align: center;
+  padding: 14px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.stat-item:active {
+  transform: scale(0.98);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.stat-item.highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(48, 209, 88, 0.25) 0%,
+    rgba(48, 209, 88, 0.1) 100%
+  );
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  box-shadow: 0 4px 20px rgba(48, 209, 88, 0.2);
+}
+
+.stat-item.hr-stat {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 69, 58, 0.25) 0%,
+    rgba(255, 69, 58, 0.1) 100%
+  );
+  border: 1px solid rgba(255, 69, 58, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 69, 58, 0.15);
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+}
+
+.calculated-stats .stat-value {
+  font-size: 1.2rem;
+}
+
+.calculated-stats .stat-item {
+  padding: 12px 6px;
+}
+
+/* ===================================
+   Form Elements - iOS Style
+   =================================== */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+input,
+select,
+.select-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+input::placeholder {
+  color: var(--text-tertiary);
+}
+
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.6)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+/* ===================================
+   Footer / Action Buttons - iOS Style
+   =================================== */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--glass-border);
+  z-index: 100;
+}
+
+.btn {
+  flex: 1;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--gradient-blue);
+  color: white;
+  box-shadow: 0 4px 20px rgba(10, 132, 255, 0.4);
+}
+
+.btn-success {
+  background: var(--gradient-green);
+  color: white;
+  box-shadow: 0 4px 20px rgba(48, 209, 88, 0.4);
+}
+
+/* ===================================
+   Toast Notifications - iOS Style
+   =================================== */
+#toast-container {
+  position: fixed;
+  top: calc(80px + env(safe-area-inset-top, 0));
+  left: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  color: var(--text-primary);
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: auto;
+}
+
+.toast.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.toast-success {
+  background: linear-gradient(
+    135deg,
+    rgba(48, 209, 88, 0.2) 0%,
+    var(--glass-bg) 100%
+  );
+  border-left: 3px solid var(--accent-green);
+}
+
+.toast-error {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 69, 58, 0.2) 0%,
+    var(--glass-bg) 100%
+  );
+  border-left: 3px solid var(--accent-red);
+}
+
+.toast-info {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 132, 255, 0.2) 0%,
+    var(--glass-bg) 100%
+  );
+  border-left: 3px solid var(--accent-blue);
+}
+
+/* ===================================
+   Leaflet Overrides - Glass Style
+   =================================== */
+.leaflet-control-zoom {
+  border: none !important;
+  overflow: hidden;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--blur-amount)) !important;
+  -webkit-backdrop-filter: blur(var(--blur-amount)) !important;
+  color: #000000 !important;
+  border: none !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--glass-bg-hover) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: var(--text-tertiary) !important;
+  font-size: 9px !important;
+  padding: 4px 8px !important;
+  border-radius: 8px 0 0 0 !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--accent-blue) !important;
+}
+
+/* ===================================
+   Responsive & iPhone Optimization
+   =================================== */
+@media (min-width: 768px) {
+  .app-content {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  #map {
+    height: 400px;
+  }
+
+  .stats-grid.four-cols {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* iPhone SE and smaller */
+@media (max-width: 375px) {
+  .stats-grid.four-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .calculated-stats .stat-value {
+    font-size: 1rem;
+  }
+}
+
+/* Landscape optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  #map {
+    height: 200px;
+  }
+
+  .app-header {
+    padding: 12px 20px;
+  }
+
+  .app-header h1 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
+
+  .btn,
+  .toast,
+  .stat-item,
+  .map-btn,
+  .map-btn-small {
+    transition: none;
+  }
+}

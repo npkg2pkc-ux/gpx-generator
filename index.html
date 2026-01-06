@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+
+    <!-- iOS Safari Optimization -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="GPX Generator" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1a1a2e" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <title>GPX Generator</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header class="app-header">
+        <h1>🗺️ GPX Generator</h1>
+        <p class="subtitle">Tap peta untuk tambah waypoint</p>
+      </header>
+
+      <!-- Main Content -->
+      <main class="app-content">
+        <!-- Map Container -->
+        <section class="map-section">
+          <div id="map"></div>
+          <div class="map-controls-top">
+            <button
+              class="map-btn-small btn-save"
+              id="btn-save"
+              title="Simpan rute"
+            >
+              💾
+            </button>
+            <button
+              class="map-btn-small btn-load"
+              id="btn-load"
+              title="Muat rute"
+            >
+              📂
+            </button>
+          </div>
+          <div class="map-controls">
+            <button
+              class="map-btn"
+              id="btn-undo"
+              title="Hapus waypoint terakhir"
+            >
+              ↩️ Undo
+            </button>
+            <button class="map-btn" id="btn-clear" title="Hapus semua">
+              🗑️ Clear
+            </button>
+            <button class="map-btn" id="btn-close-loop" title="Tutup loop">
+              🔄 Loop
+            </button>
+          </div>
+        </section>
+
+        <!-- Real-time Stats -->
+        <section class="card stats-card">
+          <h3>📊 Statistik Rute</h3>
+          <div class="stats-grid">
+            <div class="stat-item highlight">
+              <span class="stat-value" id="stat-distance">0.00</span>
+              <span class="stat-label">Jarak (km)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-elevation">0</span>
+              <span class="stat-label">Elevasi (m)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-waypoints">0</span>
+              <span class="stat-label">Waypoints</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Activity Settings -->
+        <section class="card">
+          <h3>⚙️ Pengaturan Aktivitas</h3>
+
+          <!-- Activity Type -->
+          <div class="form-group">
+            <label for="activity-type">Tipe Aktivitas</label>
+            <select id="activity-type" class="select-input">
+              <option value="walking">🚶 Jalan Kaki</option>
+              <option value="running">🏃 Lari</option>
+              <option value="cycling">🚴 Bersepeda</option>
+            </select>
+          </div>
+
+          <!-- Date & Time Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="activity-date">Tanggal</label>
+              <input type="date" id="activity-date" />
+            </div>
+            <div class="form-group">
+              <label for="start-time">Waktu Mulai</label>
+              <input type="time" id="start-time" />
+            </div>
+          </div>
+
+          <!-- Body Weight -->
+          <div class="form-group">
+            <label for="body-weight">Berat Badan (kg)</label>
+            <input
+              type="number"
+              id="body-weight"
+              placeholder="70"
+              step="0.1"
+              min="30"
+              max="200"
+              value="70"
+              inputmode="decimal"
+            />
+          </div>
+        </section>
+
+        <!-- Calculated Stats -->
+        <section class="card stats-card calculated-stats">
+          <h3>📈 Kalkulasi Otomatis</h3>
+          <div class="stats-grid four-cols">
+            <div class="stat-item">
+              <span class="stat-value" id="stat-duration">00:00</span>
+              <span class="stat-label">Durasi</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-pace">--:--</span>
+              <span class="stat-label">Pace/km</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-speed">0.0</span>
+              <span class="stat-label">km/h</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-calories">0</span>
+              <span class="stat-label">Kalori</span>
+            </div>
+          </div>
+          <div class="stats-grid three-cols" style="margin-top: 12px">
+            <div class="stat-item">
+              <span class="stat-value" id="stat-steps">0</span>
+              <span class="stat-label">Langkah</span>
+            </div>
+            <div class="stat-item hr-stat">
+              <span class="stat-value" id="stat-hr">❤️ 0</span>
+              <span class="stat-label">Avg HR</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-points">0</span>
+              <span class="stat-label">GPS Points</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bottom Action Bar -->
+      <footer class="app-footer">
+        <button class="btn btn-primary" id="generate-gpx" disabled>
+          <span class="icon">⚡</span> Generate GPX
+        </button>
+        <button class="btn btn-success" id="download-gpx" disabled>
+          <span class="icon">📥</span> Download GPX
+        </button>
+      </footer>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- App Script -->
+    <script src="script.js"></script>
+  </body>
+</html>
