@@ -80,6 +80,8 @@ const elements = {
   activityDate: document.getElementById("activity-date"),
   startTime: document.getElementById("start-time"),
   bodyWeight: document.getElementById("body-weight"),
+  avgSpeed: document.getElementById("avg-speed"),
+  speedHint: document.getElementById("speed-hint"),
 
   // Stats
   statDistance: document.getElementById("stat-distance"),
@@ -177,8 +179,32 @@ function initEventListeners() {
   elements.downloadGpxBtnMobile.addEventListener("click", downloadGPX);
 
   // Form changes trigger stats update
-  elements.activityType.addEventListener("change", updateStats);
+  elements.activityType.addEventListener("change", onActivityTypeChange);
   elements.bodyWeight.addEventListener("input", updateStats);
+  elements.avgSpeed.addEventListener("input", updateStats);
+}
+
+// ===================================
+// Activity Type Change Handler
+// ===================================
+function onActivityTypeChange() {
+  const activity = elements.activityType.value;
+  const config = ACTIVITY_CONFIG[activity];
+  
+  // Update speed input with default for this activity
+  elements.avgSpeed.value = config.avgSpeed;
+  
+  // Update hint text
+  if (elements.speedHint) {
+    const hints = {
+      walking: "Rekomendasi: 4-6 km/h",
+      running: "Rekomendasi: 7-13 km/h",
+      cycling: "Rekomendasi: 15-30 km/h"
+    };
+    elements.speedHint.textContent = hints[activity];
+  }
+  
+  updateStats();
 }
 
 // ===================================
@@ -343,6 +369,9 @@ function updateStats() {
   const activity = elements.activityType.value;
   const config = ACTIVITY_CONFIG[activity];
   const weight = parseFloat(elements.bodyWeight.value) || 70;
+  
+  // Get custom speed from input or use default
+  const customSpeed = parseFloat(elements.avgSpeed.value) || config.avgSpeed;
 
   // Distance
   const distanceKm = calculateTotalDistance();
@@ -352,8 +381,8 @@ function updateStats() {
   // Waypoints count
   elements.statWaypoints.textContent = state.waypoints.length;
 
-  // Duration (based on avg speed)
-  const durationHours = distanceKm / config.avgSpeed;
+  // Duration (based on custom avg speed)
+  const durationHours = distanceKm / customSpeed;
   const durationMinutes = durationHours * 60;
   const hours = Math.floor(durationMinutes / 60);
   const mins = Math.floor(durationMinutes % 60);
@@ -373,8 +402,8 @@ function updateStats() {
     elements.statPace.textContent = "--:--";
   }
 
-  // Speed
-  elements.statSpeed.textContent = config.avgSpeed.toFixed(1);
+  // Speed (show custom speed)
+  elements.statSpeed.textContent = customSpeed.toFixed(1);
 
   // Calories (MET formula)
   const calories = Math.round(config.met * weight * durationHours);
@@ -415,19 +444,25 @@ function generateGPX() {
   const activity = elements.activityType.value;
   const config = ACTIVITY_CONFIG[activity];
   const weight = parseFloat(elements.bodyWeight.value) || 70;
+  
+  // Get custom speed from input
+  const customSpeed = parseFloat(elements.avgSpeed.value) || config.avgSpeed;
 
   // Parse start time
   const dateStr = elements.activityDate.value;
   const timeStr = elements.startTime.value;
   const startTime = new Date(`${dateStr}T${timeStr}:00`);
 
-  // Calculate duration and speed
+  // Calculate duration using custom speed
   const distanceKm = state.totalDistance;
-  const durationHours = distanceKm / config.avgSpeed;
+  const durationHours = distanceKm / customSpeed;
   const durationSeconds = durationHours * 3600;
 
+  // Create modified config with custom speed
+  const customConfig = { ...config, avgSpeed: customSpeed };
+
   // Generate GPS track points along the route
-  const trackPoints = generateTrackPoints(startTime, durationSeconds, config);
+  const trackPoints = generateTrackPoints(startTime, durationSeconds, customConfig);
 
   // Calculate actual stats from generated points
   const actualDistance = calculateTrackDistance(trackPoints);
@@ -830,49 +865,52 @@ function initInstallPrompt() {
   const installDismiss = document.getElementById("install-dismiss");
 
   // Check if already installed (standalone mode)
-  if (window.matchMedia('(display-mode: standalone)').matches || 
-      window.navigator.standalone === true) {
-    console.log('App already installed');
+  if (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  ) {
+    console.log("App already installed");
     return;
   }
 
   // Check if dismissed recently
-  const dismissedTime = localStorage.getItem('installDismissed');
+  const dismissedTime = localStorage.getItem("installDismissed");
   if (dismissedTime) {
-    const hoursSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60);
+    const hoursSinceDismissed =
+      (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60);
     if (hoursSinceDismissed < 24) {
-      console.log('Install banner dismissed recently');
+      console.log("Install banner dismissed recently");
       return;
     }
   }
 
   // Listen for beforeinstallprompt (Chrome, Edge, Android)
-  window.addEventListener('beforeinstallprompt', (e) => {
+  window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    
+
     // Show install banner
     if (installBanner) {
-      installBanner.style.display = 'flex';
+      installBanner.style.display = "flex";
     }
-    
-    console.log('Install prompt ready');
+
+    console.log("Install prompt ready");
   });
 
   // Handle install button click
   if (installBtn) {
-    installBtn.addEventListener('click', async () => {
+    installBtn.addEventListener("click", async () => {
       if (deferredPrompt) {
         // Chrome/Android install prompt
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-          showToast('Aplikasi berhasil diinstall! 🎉', 'success');
+
+        if (outcome === "accepted") {
+          showToast("Aplikasi berhasil diinstall! 🎉", "success");
         }
-        
+
         deferredPrompt = null;
-        installBanner.style.display = 'none';
+        installBanner.style.display = "none";
       } else if (isIOS()) {
         // Show iOS instructions
         showIOSInstallInstructions();
@@ -882,9 +920,9 @@ function initInstallPrompt() {
 
   // Handle dismiss button
   if (installDismiss) {
-    installDismiss.addEventListener('click', () => {
-      installBanner.style.display = 'none';
-      localStorage.setItem('installDismissed', Date.now().toString());
+    installDismiss.addEventListener("click", () => {
+      installBanner.style.display = "none";
+      localStorage.setItem("installDismissed", Date.now().toString());
     });
   }
 
@@ -892,15 +930,15 @@ function initInstallPrompt() {
   if (isIOS() && !window.navigator.standalone) {
     setTimeout(() => {
       if (installBanner) {
-        installBanner.style.display = 'flex';
+        installBanner.style.display = "flex";
       }
     }, 2000);
   }
 
   // Listen for app installed event
-  window.addEventListener('appinstalled', () => {
-    showToast('GPX Generator terinstall! 🎉', 'success');
-    installBanner.style.display = 'none';
+  window.addEventListener("appinstalled", () => {
+    showToast("GPX Generator terinstall! 🎉", "success");
+    installBanner.style.display = "none";
     deferredPrompt = null;
   });
 }
@@ -911,8 +949,8 @@ function isIOS() {
 
 function showIOSInstallInstructions() {
   // Create modal
-  const modal = document.createElement('div');
-  modal.className = 'ios-install-modal';
+  const modal = document.createElement("div");
+  modal.className = "ios-install-modal";
   modal.innerHTML = `
     <div class="ios-install-content">
       <h3>📲 Install GPX Generator</h3>
@@ -937,11 +975,11 @@ function showIOSInstallInstructions() {
   document.body.appendChild(modal);
 
   // Close modal
-  modal.querySelector('.ios-close-btn').addEventListener('click', () => {
+  modal.querySelector(".ios-close-btn").addEventListener("click", () => {
     modal.remove();
   });
 
-  modal.addEventListener('click', (e) => {
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.remove();
     }
