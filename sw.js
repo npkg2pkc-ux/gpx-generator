@@ -3,7 +3,7 @@
  * Enables offline functionality and caching
  */
 
-const CACHE_NAME = "gpx-generator-v2";
+const CACHE_NAME = "gpx-generator-v3";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",

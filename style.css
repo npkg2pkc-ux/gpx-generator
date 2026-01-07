@@ -703,33 +703,42 @@ select {
    Desktop Layout (1024px+)
    Full-screen map with sidebar
    =================================== */
-@media (min-width: 1024px) {
-  #app {
-    flex-direction: row;
-    height: 100vh;
+@media screen and (min-width: 1024px) {
+  body {
     overflow: hidden;
   }
 
-  /* Header becomes smaller on desktop */
-  .app-header {
-    display: none;
+  #app {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    padding: 0;
   }
 
-  /* Desktop header in sidebar */
+  /* Hide mobile header on desktop */
+  .app-header {
+    display: none !important;
+  }
+
+  /* Desktop header in sidebar - show it */
   .desktop-header {
-    display: block;
-    padding: 24px 20px 16px;
+    display: block !important;
+    padding: 24px 20px 20px;
     border-bottom: 1px solid var(--glass-border);
+    background: transparent;
   }
 
   .desktop-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
     background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     letter-spacing: -0.5px;
   }
 
@@ -738,66 +747,101 @@ select {
     color: var(--text-secondary);
   }
 
-  /* Main content becomes sidebar */
-  .app-content {
-    width: 380px;
-    min-width: 380px;
-    max-width: 380px;
-    height: 100vh;
-    overflow-y: auto;
-    padding: 16px;
-    padding-bottom: 100px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--blur-amount));
-    -webkit-backdrop-filter: blur(var(--blur-amount));
-    border-left: 1px solid var(--glass-border);
-    order: 2;
-  }
-
-  /* Map section takes full remaining space */
+  /* ===== MAP SECTION - FULLSCREEN LEFT ===== */
   .map-section {
     flex: 1;
-    height: 100vh;
+    height: 100vh !important;
+    min-height: 100vh;
     margin: 0;
     border-radius: 0;
     border: none;
+    box-shadow: none;
     order: 1;
+    position: relative;
   }
 
   #map {
-    height: 100%;
+    height: 100% !important;
+    width: 100%;
     border-radius: 0;
   }
 
-  /* Map controls positioning for desktop */
+  /* Map controls for desktop */
   .map-controls-top {
-    top: 20px;
-    right: 20px;
+    top: 24px;
+    right: 24px;
   }
 
   .map-controls {
-    bottom: 24px;
-    left: 24px;
+    bottom: 32px;
+    left: 32px;
     right: auto;
     width: auto;
+    gap: 12px;
   }
 
   .map-btn {
-    padding: 14px 24px;
-    font-size: 0.9rem;
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a2e;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    border: none;
+  }
+
+  .map-btn:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
   }
 
   .map-btn-small {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+    border-radius: 14px;
   }
 
-  /* Cards styling for desktop sidebar */
+  /* ===== SIDEBAR - RIGHT PANEL ===== */
+  .app-content {
+    width: 400px;
+    min-width: 400px;
+    max-width: 400px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    padding-bottom: 100px;
+    background: linear-gradient(
+      180deg,
+      rgba(26, 26, 46, 0.98) 0%,
+      rgba(22, 33, 62, 0.98) 50%,
+      rgba(15, 52, 96, 0.98) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--glass-border);
+    order: 2;
+    flex-shrink: 0;
+  }
+
+  .app-content .card:first-of-type {
+    margin-top: 0;
+  }
+
+  /* Cards in sidebar */
   .card {
+    margin: 16px;
     margin-bottom: 12px;
-    padding: 16px;
+    padding: 18px;
     border-radius: 16px;
+  }
+
+  .card h3 {
+    font-size: 0.85rem;
+    margin-bottom: 14px;
   }
 
   .stats-card {
@@ -805,7 +849,7 @@ select {
   }
 
   .stats-grid {
-    gap: 8px;
+    gap: 10px;
   }
 
   .stats-grid.four-cols {
@@ -817,44 +861,68 @@ select {
   }
 
   .stat-item {
-    padding: 12px 8px;
+    padding: 14px 10px;
   }
 
   .stat-value {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .calculated-stats .stat-value {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
-  /* Footer fixed to sidebar bottom */
+  /* Form elements in sidebar */
+  .form-group label {
+    font-size: 0.75rem;
+  }
+
+  input,
+  select,
+  .select-input {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  /* ===== FOOTER - FIXED TO SIDEBAR ===== */
   .app-footer {
     position: fixed;
     bottom: 0;
     right: 0;
-    width: 380px;
+    width: 400px;
     border-radius: 0;
+    border-top: 1px solid var(--glass-border);
     border-left: 1px solid var(--glass-border);
-    padding: 12px 16px;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+    background: rgba(26, 26, 46, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .btn {
     padding: 14px 20px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
-  /* Leaflet controls positioning */
+  /* Leaflet controls */
   .leaflet-control-zoom {
-    margin-top: 20px !important;
-    margin-left: 20px !important;
+    margin-top: 24px !important;
+    margin-left: 24px !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 20px !important;
   }
 
   /* Toast positioning */
   #toast-container {
-    top: 20px;
-    left: auto;
-    right: 400px;
+    top: 24px;
+    left: 24px;
+    right: auto;
     max-width: 400px;
   }
 }
@@ -862,19 +930,15 @@ select {
 /* ===================================
    Large Desktop (1440px+)
    =================================== */
-@media (min-width: 1440px) {
+@media screen and (min-width: 1440px) {
   .app-content {
-    width: 420px;
-    min-width: 420px;
-    max-width: 420px;
+    width: 440px;
+    min-width: 440px;
+    max-width: 440px;
   }
 
   .app-footer {
-    width: 420px;
-  }
-
-  #toast-container {
-    right: 440px;
+    width: 440px;
   }
 
   .stats-grid.four-cols {
@@ -882,43 +946,44 @@ select {
   }
 
   .stat-value {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 20px;
+    margin: 20px;
   }
 }
 
 /* ===================================
    Extra Large Desktop (1920px+)
    =================================== */
-@media (min-width: 1920px) {
+@media screen and (min-width: 1920px) {
   .app-content {
-    width: 480px;
-    min-width: 480px;
-    max-width: 480px;
+    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
   }
 
   .app-footer {
-    width: 480px;
-  }
-
-  #toast-container {
-    right: 500px;
+    width: 500px;
   }
 
   .card {
-    padding: 20px;
+    padding: 24px;
   }
 
   .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .map-controls {
-    bottom: 32px;
-    left: 32px;
+    bottom: 40px;
+    left: 40px;
   }
 
   .map-btn {
-    padding: 16px 28px;
+    padding: 16px 32px;
     font-size: 1rem;
   }
 }
@@ -939,7 +1004,7 @@ select {
   }
 }
 
-/* Hide desktop header on mobile */
+/* Hide desktop header on mobile by default */
 .desktop-header {
   display: none;
 }
