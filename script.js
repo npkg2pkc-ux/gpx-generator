@@ -820,9 +820,141 @@ function showToast(message, type = "info") {
 }
 
 // ===================================
+// PWA Install Prompt
+// ===================================
+let deferredPrompt = null;
+
+function initInstallPrompt() {
+  const installBanner = document.getElementById("install-banner");
+  const installBtn = document.getElementById("install-btn");
+  const installDismiss = document.getElementById("install-dismiss");
+
+  // Check if already installed (standalone mode)
+  if (window.matchMedia('(display-mode: standalone)').matches || 
+      window.navigator.standalone === true) {
+    console.log('App already installed');
+    return;
+  }
+
+  // Check if dismissed recently
+  const dismissedTime = localStorage.getItem('installDismissed');
+  if (dismissedTime) {
+    const hoursSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60);
+    if (hoursSinceDismissed < 24) {
+      console.log('Install banner dismissed recently');
+      return;
+    }
+  }
+
+  // Listen for beforeinstallprompt (Chrome, Edge, Android)
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install banner
+    if (installBanner) {
+      installBanner.style.display = 'flex';
+    }
+    
+    console.log('Install prompt ready');
+  });
+
+  // Handle install button click
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        // Chrome/Android install prompt
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+          showToast('Aplikasi berhasil diinstall! 🎉', 'success');
+        }
+        
+        deferredPrompt = null;
+        installBanner.style.display = 'none';
+      } else if (isIOS()) {
+        // Show iOS instructions
+        showIOSInstallInstructions();
+      }
+    });
+  }
+
+  // Handle dismiss button
+  if (installDismiss) {
+    installDismiss.addEventListener('click', () => {
+      installBanner.style.display = 'none';
+      localStorage.setItem('installDismissed', Date.now().toString());
+    });
+  }
+
+  // For iOS - show banner with instructions
+  if (isIOS() && !window.navigator.standalone) {
+    setTimeout(() => {
+      if (installBanner) {
+        installBanner.style.display = 'flex';
+      }
+    }, 2000);
+  }
+
+  // Listen for app installed event
+  window.addEventListener('appinstalled', () => {
+    showToast('GPX Generator terinstall! 🎉', 'success');
+    installBanner.style.display = 'none';
+    deferredPrompt = null;
+  });
+}
+
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function showIOSInstallInstructions() {
+  // Create modal
+  const modal = document.createElement('div');
+  modal.className = 'ios-install-modal';
+  modal.innerHTML = `
+    <div class="ios-install-content">
+      <h3>📲 Install GPX Generator</h3>
+      <div class="ios-install-steps">
+        <div class="ios-step">
+          <span class="ios-step-icon">1️⃣</span>
+          <span class="ios-step-text">Tap tombol <strong>Share</strong> di Safari (ikon kotak dengan panah)</span>
+        </div>
+        <div class="ios-step">
+          <span class="ios-step-icon">2️⃣</span>
+          <span class="ios-step-text">Scroll ke bawah dan tap <strong>"Add to Home Screen"</strong></span>
+        </div>
+        <div class="ios-step">
+          <span class="ios-step-icon">3️⃣</span>
+          <span class="ios-step-text">Tap <strong>"Add"</strong> di pojok kanan atas</span>
+        </div>
+      </div>
+      <button class="ios-close-btn">Mengerti</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close modal
+  modal.querySelector('.ios-close-btn').addEventListener('click', () => {
+    modal.remove();
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
+}
+
+// ===================================
 // Initialize on DOM Ready
 // ===================================
-document.addEventListener("DOMContentLoaded", initApp);
+document.addEventListener("DOMContentLoaded", () => {
+  initApp();
+  initInstallPrompt();
+});
 
 // Register Service Worker
 if ("serviceWorker" in navigator) {
