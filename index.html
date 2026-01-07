@@ -16,6 +16,9 @@
     <meta name="apple-mobile-web-app-title" content="GPX Generator" />
     <meta name="format-detection" content="telephone=no" />
 
+    <!-- Android/Chrome PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a2e" />
 
@@ -39,49 +42,55 @@
   </head>
   <body>
     <div id="app">
-      <!-- Header -->
+      <!-- Mobile Header -->
       <header class="app-header">
         <h1>🗺️ GPX Generator</h1>
         <p class="subtitle">Tap peta untuk tambah waypoint</p>
       </header>
 
-      <!-- Main Content -->
+      <!-- Map Container (moved outside main for desktop layout) -->
+      <section class="map-section">
+        <div id="map"></div>
+        <div class="map-controls-top">
+          <button
+            class="map-btn-small btn-save"
+            id="btn-save"
+            title="Simpan rute"
+          >
+            💾
+          </button>
+          <button
+            class="map-btn-small btn-load"
+            id="btn-load"
+            title="Muat rute"
+          >
+            📂
+          </button>
+        </div>
+        <div class="map-controls">
+          <button
+            class="map-btn"
+            id="btn-undo"
+            title="Hapus waypoint terakhir"
+          >
+            ↩️ Undo
+          </button>
+          <button class="map-btn" id="btn-clear" title="Hapus semua">
+            🗑️ Clear
+          </button>
+          <button class="map-btn" id="btn-close-loop" title="Tutup loop">
+            🔄 Loop
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Content / Sidebar on Desktop -->
       <main class="app-content">
-        <!-- Map Container -->
-        <section class="map-section">
-          <div id="map"></div>
-          <div class="map-controls-top">
-            <button
-              class="map-btn-small btn-save"
-              id="btn-save"
-              title="Simpan rute"
-            >
-              💾
-            </button>
-            <button
-              class="map-btn-small btn-load"
-              id="btn-load"
-              title="Muat rute"
-            >
-              📂
-            </button>
-          </div>
-          <div class="map-controls">
-            <button
-              class="map-btn"
-              id="btn-undo"
-              title="Hapus waypoint terakhir"
-            >
-              ↩️ Undo
-            </button>
-            <button class="map-btn" id="btn-clear" title="Hapus semua">
-              🗑️ Clear
-            </button>
-            <button class="map-btn" id="btn-close-loop" title="Tutup loop">
-              🔄 Loop
-            </button>
-          </div>
-        </section>
+        <!-- Desktop Header (shown only on desktop) -->
+        <div class="desktop-header">
+          <h1>🗺️ GPX Generator</h1>
+          <p class="subtitle">Klik peta untuk tambah waypoint</p>
+        </div>
 
         <!-- Real-time Stats -->
         <section class="card stats-card">

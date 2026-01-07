@@ -3,13 +3,15 @@
  * Enables offline functionality and caching
  */
 
-const CACHE_NAME = "gpx-generator-v1";
+const CACHE_NAME = "gpx-generator-v2";
 const ASSETS_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/manifest.json",
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./manifest.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
 ];
 
 // Install event - cache assets
@@ -86,7 +88,7 @@ self.addEventListener("fetch", (event) => {
         .catch(() => {
           // Network failed, return offline page if available
           if (event.request.mode === "navigate") {
-            return caches.match("/index.html");
+            return caches.match("./index.html");
           }
           return null;
         });
