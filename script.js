@@ -72,6 +72,8 @@ const elements = {
   btnLoad: document.getElementById("btn-load"),
   generateGpxBtn: document.getElementById("generate-gpx"),
   downloadGpxBtn: document.getElementById("download-gpx"),
+  generateGpxBtnMobile: document.getElementById("generate-gpx-mobile"),
+  downloadGpxBtnMobile: document.getElementById("download-gpx-mobile"),
 
   // Form
   activityType: document.getElementById("activity-type"),
@@ -166,9 +168,13 @@ function initEventListeners() {
   elements.btnSave.addEventListener("click", saveRoute);
   elements.btnLoad.addEventListener("click", loadRoute);
 
-  // Generate buttons
+  // Generate buttons (Desktop)
   elements.generateGpxBtn.addEventListener("click", generateGPX);
   elements.downloadGpxBtn.addEventListener("click", downloadGPX);
+
+  // Generate buttons (Mobile)
+  elements.generateGpxBtnMobile.addEventListener("click", generateGPX);
+  elements.downloadGpxBtnMobile.addEventListener("click", downloadGPX);
 
   // Form changes trigger stats update
   elements.activityType.addEventListener("change", updateStats);
@@ -213,7 +219,9 @@ function addWaypoint(lat, lon) {
   updateStats();
 
   // Enable generate button if we have at least 2 waypoints
-  elements.generateGpxBtn.disabled = state.waypoints.length < 2;
+  const canGenerate = state.waypoints.length < 2;
+  elements.generateGpxBtn.disabled = canGenerate;
+  elements.generateGpxBtnMobile.disabled = canGenerate;
 }
 
 function createMarkerIcon(number, isStart) {
@@ -266,7 +274,9 @@ function undoLastWaypoint() {
   updatePolyline();
   updateStats();
 
-  elements.generateGpxBtn.disabled = state.waypoints.length < 2;
+  const canGenerate = state.waypoints.length < 2;
+  elements.generateGpxBtn.disabled = canGenerate;
+  elements.generateGpxBtnMobile.disabled = canGenerate;
   showToast("Waypoint dihapus", "info");
 }
 
@@ -279,7 +289,9 @@ function clearAllWaypoints() {
   updateStats();
 
   elements.generateGpxBtn.disabled = true;
+  elements.generateGpxBtnMobile.disabled = true;
   elements.downloadGpxBtn.disabled = true;
+  elements.downloadGpxBtnMobile.disabled = true;
   state.gpxData = null;
 
   showToast("Semua waypoint dihapus", "info");
@@ -438,6 +450,7 @@ function generateGPX() {
 
   state.gpxData = gpx;
   elements.downloadGpxBtn.disabled = false;
+  elements.downloadGpxBtnMobile.disabled = false;
 
   showToast(`GPX berhasil dibuat! ${trackPoints.length} GPS points`, "success");
 
